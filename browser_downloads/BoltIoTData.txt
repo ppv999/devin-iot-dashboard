@@ -1,0 +1,9 @@
+Bolt IoT Data Visualization
+Real-time sensor data graph
+API Key *
+af75e9bd-dcaa-4201-9312-5
+Device ID *
+BOLT906666
+Fetch Data
+Download PDF
+
