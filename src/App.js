@@ -1,23 +1,21 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import CSVUploader from './components/CSVUploader';
+import DataDisplay from './components/DataDisplay';
+import AIPrompt from './components/AIPrompt';
+import ChartComponent from './components/ChartComponent';
 
 function App() {
+  const [csvData, setCsvData] = useState([]);
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [chartData, setChartData] = useState({ labels: [], values: [], label: 'Analysis Data' });
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <CSVUploader setData={setCsvData} />
+      {csvData.length > 0 && <DataDisplay data={csvData} />}
+      <AIPrompt setData={setAnalysisResult} />
+      {analysisResult && <ChartComponent chartData={chartData} />}
     </div>
   );
 }
