@@ -8,7 +8,7 @@ const port = 5000;
 
 // OpenAI API configuration
 const openai = new OpenAIApi({
-  apiKey: process.env.OPENAI_API_KEY,
+  api_key: process.env.OPENAI_API_KEY,
 });
 
 // Middleware
