@@ -1,14 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
 const app = express();
 const port = 5000;
 
 // OpenAI API configuration
-const openai = new OpenAIApi({
-  api_key: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 // Middleware
@@ -26,9 +26,9 @@ app.post('/api/analyze', async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const response = await openai.createChatCompletion({
+    const response = await openai.Chat.Completions.createChatCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
+      messages: [{ role: "system", content: "Analyze the following data." }, { role: "user", content: prompt }],
     });
 
     console.log(`Sending response:`, response.data.choices[0].message.content);
