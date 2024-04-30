@@ -1,13 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
 const app = express();
 const port = 5000;
 
 // OpenAI API configuration
-const openai = new OpenAIApi({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -26,7 +26,7 @@ app.post('/api/analyze', async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const chatCompletion = await openai.createCompletion({
+    const chatCompletion = await openai.Completions.create({
       model: "gpt-3.5-turbo",
       prompt: prompt,
       max_tokens: 150,
