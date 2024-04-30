@@ -1,16 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAIApi } = require('openai');
 
 const app = express();
 const port = 5000;
 
 // OpenAI API configuration
-const configuration = new Configuration({
+const openai = new OpenAIApi({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 // Middleware
 app.use(cors());
@@ -27,9 +26,10 @@ app.post('/api/analyze', async (req, res) => {
   const { prompt } = req.body;
 
   try {
-    const chatCompletion = await openai.createChatCompletion({
+    const chatCompletion = await openai.createCompletion({
       model: "gpt-3.5-turbo",
-      messages: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
+      prompt: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
+      max_tokens: 150,
     });
 
     console.log(`Received response from OpenAI:`, chatCompletion.data);
