@@ -29,7 +29,7 @@ const AIPrompt = ({ setData }) => {
     }
 
     try {
-      const response = await axios.post('/api/analyze', { prompt });
+      const response = await axios.post('https://0719dbb24689.ngrok.app/api/analyze', { prompt });
       setData(response.data);
       toast({
         title: 'Analysis complete.',

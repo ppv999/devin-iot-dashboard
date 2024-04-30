@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import CSVUploader from './components/CSVUploader';
 import DataDisplay from './components/DataDisplay';
@@ -8,7 +8,25 @@ import ChartComponent from './components/ChartComponent';
 function App() {
   const [csvData, setCsvData] = useState([]);
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [chartData, setChartData] = useState({ labels: [], values: [], label: 'Analysis Data' });
+  const [chartData, setChartData] = useState({ labels: [], datasets: [{ label: 'Analysis Data', data: [] }] });
+
+  useEffect(() => {
+    if (analysisResult) {
+      // Assuming analysisResult is an array of objects with 'timestamp', 'value' keys
+      const labels = analysisResult.map(item => item.timestamp);
+      const data = analysisResult.map(item => item.value);
+      setChartData({
+        labels: labels,
+        datasets: [
+          {
+            label: 'Analysis Data',
+            data: data,
+            backgroundColor: 'rgba(53, 162, 235, 0.5)',
+          }
+        ]
+      });
+    }
+  }, [analysisResult]);
 
   return (
     <div className="App">

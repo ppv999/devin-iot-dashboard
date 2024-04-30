@@ -32,8 +32,14 @@ app.post('/api/analyze', async (req, res) => {
       messages: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
     });
 
-    console.log(`Sending response:`, chatCompletion.data.choices[0].message.content);
-    res.json({ data: chatCompletion.data.choices[0].message.content });
+    console.log(`Received response from OpenAI:`, chatCompletion.data);
+    if (chatCompletion.data && chatCompletion.data.choices) {
+      console.log(`Sending response:`, chatCompletion.data.choices[0].message.content);
+      res.json({ data: chatCompletion.data.choices[0].message.content });
+    } else {
+      console.log(`Unexpected response structure from OpenAI:`, chatCompletion.data);
+      res.status(500).json({ error: "Unexpected response structure from OpenAI API." });
+    }
   } catch (error) {
     console.error(`Error processing request:`, error);
     res.status(500).json({ error: error.message });
