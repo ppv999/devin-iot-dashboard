@@ -28,7 +28,7 @@ app.post('/api/analyze', async (req, res) => {
   try {
     const chatCompletion = await openai.createCompletion({
       model: "gpt-3.5-turbo",
-      prompt: [{ role: "system", content: "You are a helpful assistant." }, { role: "user", content: prompt }],
+      prompt: prompt,
       max_tokens: 150,
     });
 
