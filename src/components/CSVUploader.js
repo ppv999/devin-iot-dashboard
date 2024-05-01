@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react';
 import Papa from 'papaparse';
 
-// Added a comment to trigger a new build hash
+// Triggering a new build with a significant change
 const CSVUploader = ({ setData }) => {
   const toast = useToast();
 
@@ -34,7 +34,7 @@ const CSVUploader = ({ setData }) => {
 
   return (
     <VStack spacing={6}>
-      <Heading as="h3" size="lg" color="#1C2531">Upload CSV File</Heading>
+      <Heading as="h3" size="lg" color="#1C2531">Upload Your CSV File</Heading>
       <Input type="file" accept=".csv" onChange={handleFileChange} devin-id="csv-upload-input" />
     </VStack>
   );
