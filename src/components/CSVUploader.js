@@ -47,8 +47,8 @@ const CSVUploader = ({ setData }) => {
   return (
     <VStack spacing={6}>
       <Heading as="h3" size="lg">Upload CSV File</Heading>
-      <Input type="file" accept=".csv" onChange={handleFileChange} />
-      <Button colorScheme="blue" onClick={handleUpload}>Upload</Button>
+      <Input type="file" accept=".csv" onChange={handleFileChange} devin-id="csv-upload-input" />
+      <Button colorScheme="blue" onClick={handleUpload} devin-id="upload-button">Upload</Button>
     </VStack>
   );
 };
