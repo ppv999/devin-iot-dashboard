@@ -48,6 +48,7 @@ app.post('/api/analyze', upload.single('csv'), async (req, res) => {
 
         // Combine CSV data with prompt for AI analysis
         const combinedPrompt = `Analyze the following data:\n${JSON.stringify(csvData)}\n\n${prompt}`;
+        console.log('Combined prompt:', combinedPrompt); // Added logging for combinedPrompt
 
         try {
           const chatCompletion = await openai.chat.completions.create({

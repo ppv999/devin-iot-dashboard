@@ -22,3 +22,15 @@
   },
   "system_fingerprint": "fp_3b956da36b"
 }
+2024-05-01T11:12:33.917Z - Error processing request: Error: 400 Invalid value for 'content': expected a string, got null.
+    at APIError.generate (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/core.js:263:33)
+    at OpenAI.makeRequest (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/core.js:306:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/ubuntu/webapp-dashboard/frontend/server.js:35:28
+2024-05-01T11:17:13.269Z - Error processing request: Error: 400 Invalid value for 'content': expected a string, got null.
+    at APIError.generate (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/error.js:45:20)
+    at OpenAI.makeStatusError (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/core.js:263:33)
+    at OpenAI.makeRequest (/home/ubuntu/webapp-dashboard/frontend/node_modules/openai/core.js:306:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async /home/ubuntu/webapp-dashboard/frontend/server.js:35:28
