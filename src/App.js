@@ -4,6 +4,29 @@ import CSVUploader from './components/CSVUploader';
 import DataDisplay from './components/DataDisplay';
 import AIPrompt from './components/AIPrompt';
 import ChartComponent from './components/ChartComponent';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+
+const theme = extendTheme({
+  styles: {
+    global: {
+      'html, body': {
+        color: '#1C2531',
+        background: '#FFFFFF',
+      },
+    },
+  },
+  components: {
+    Button: {
+      baseStyle: {
+        fontWeight: 'bold',
+        borderRadius: 'lg',
+      },
+      defaultProps: {
+        colorScheme: 'green',
+      },
+    },
+  },
+});
 
 function App() {
   const [csvData, setCsvData] = useState([]);
@@ -29,12 +52,14 @@ function App() {
   }, [analysisResult]);
 
   return (
-    <div className="App">
-      <CSVUploader setData={setCsvData} />
-      {csvData.length > 0 && <DataDisplay data={csvData} />}
-      <AIPrompt setData={setAnalysisResult} />
-      {analysisResult && analysisResult.length > 0 && <ChartComponent chartData={chartData} />}
-    </div>
+    <ChakraProvider theme={theme}>
+      <div className="App">
+        <CSVUploader setData={setCsvData} />
+        {csvData.length > 0 && <DataDisplay data={csvData} />}
+        <AIPrompt setData={setAnalysisResult} />
+        {analysisResult && analysisResult.length > 0 && <ChartComponent chartData={chartData} />}
+      </div>
+    </ChakraProvider>
   );
 }
 
