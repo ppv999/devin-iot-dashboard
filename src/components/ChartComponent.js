@@ -6,8 +6,8 @@ const ChartComponent = ({ chartData }) => {
     labels: chartData.labels,
     datasets: [
       {
-        label: chartData.label,
-        data: chartData.values,
+        label: chartData.datasets[0].label,
+        data: chartData.datasets[0].data,
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
     ],
@@ -16,6 +16,7 @@ const ChartComponent = ({ chartData }) => {
   const options = {
     scales: {
       y: {
+        type: 'linear',
         beginAtZero: true,
       },
     },

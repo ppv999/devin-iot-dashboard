@@ -7,11 +7,11 @@ import ChartComponent from './components/ChartComponent';
 
 function App() {
   const [csvData, setCsvData] = useState([]);
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState([]);
   const [chartData, setChartData] = useState({ labels: [], datasets: [{ label: 'Analysis Data', data: [] }] });
 
   useEffect(() => {
-    if (analysisResult) {
+    if (analysisResult && analysisResult.length > 0) {
       // Assuming analysisResult is an array of objects with 'timestamp', 'value' keys
       const labels = analysisResult.map(item => item.timestamp);
       const data = analysisResult.map(item => item.value);
@@ -33,7 +33,7 @@ function App() {
       <CSVUploader setData={setCsvData} />
       {csvData.length > 0 && <DataDisplay data={csvData} />}
       <AIPrompt setData={setAnalysisResult} />
-      {analysisResult && <ChartComponent chartData={chartData} />}
+      {analysisResult && analysisResult.length > 0 && <ChartComponent chartData={chartData} />}
     </div>
   );
 }
