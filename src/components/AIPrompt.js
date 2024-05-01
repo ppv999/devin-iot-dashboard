@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   VStack,
   Heading,
@@ -6,17 +6,24 @@ import {
   Button,
   useToast,
   Box,
-  Text
+  Text,
+  Input
 } from '@chakra-ui/react';
 import axios from 'axios';
 
 const AIPrompt = ({ setData }) => {
   const [prompt, setPrompt] = useState('');
   const [analysisResult, setAnalysisResult] = useState('');
+  const [file, setFile] = useState(null);
   const toast = useToast();
+  const fileInputRef = useRef();
 
   const handlePromptChange = (e) => {
     setPrompt(e.target.value);
+  };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleAnalyze = async () => {
@@ -31,8 +38,27 @@ const AIPrompt = ({ setData }) => {
       return;
     }
 
+    if (!file) {
+      toast({
+        title: 'No file selected.',
+        description: "Please upload a CSV file to analyze.",
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('prompt', prompt);
+    formData.append('csv', file);
+
     try {
-      const response = await axios.post('https://0719dbb24689.ngrok.app/api/analyze', { prompt });
+      const response = await axios.post('https://0719dbb24689.ngrok.app/api/analyze', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       setData(response.data);
       setAnalysisResult(response.data.data); // Update to store the analysis result
       toast({
@@ -56,6 +82,14 @@ const AIPrompt = ({ setData }) => {
   return (
     <VStack spacing={6}>
       <Heading as="h3" size="lg">AI Analysis Prompt</Heading>
+      <Input
+        type="file"
+        accept=".csv"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        hidden
+      />
+      <Button onClick={() => fileInputRef.current.click()}>Upload CSV</Button>
       <Textarea
         placeholder="Enter your prompt here..."
         value={prompt}
