@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChakraProvider, Box, VStack, Heading, Text, Button, Input } from '@chakra-ui/react';
+import axios from 'axios';
 
 function App() {
   // State to store the uploaded file
-  const [file, setFile] = React.useState(null);
+  const [file, setFile] = useState(null);
   // State to store the insights from OpenAI API
-  const [insights, setInsights] = React.useState('');
+  const [insights, setInsights] = useState('');
+  // State to store the user's prompt for real-time analysis
+  const [prompt, setPrompt] = useState('');
 
   // Handle file upload event
   const handleFileUpload = (event) => {
@@ -14,10 +17,35 @@ function App() {
   };
 
   // Handle file submit event
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (file) {
-      // TODO: Implement file parsing and OpenAI API call
-      console.log('File submitted:', file);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await axios.post('http://127.0.0.1:5001/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setInsights(response.data.insights);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        setInsights('Error processing file.');
+      }
+    }
+  };
+
+  // Handle real-time analysis prompt submit
+  const handlePromptSubmit = async () => {
+    if (prompt) {
+      try {
+        const response = await axios.post('http://127.0.0.1:5001/analyze', { prompt });
+        setInsights(response.data.insights);
+      } catch (error) {
+        console.error('Error submitting prompt:', error);
+        setInsights('Error processing prompt.');
+      }
     }
   };
 
@@ -26,9 +54,15 @@ function App() {
       <Box p={5}>
         <VStack spacing={4}>
           <Heading>Data Analysis Dashboard</Heading>
-          <Text>Upload your CSV file to get started.</Text>
+          <Text>Upload your CSV file or enter a prompt for real-time analysis.</Text>
           <Input type="file" accept=".csv" onChange={handleFileUpload} />
-          <Button colorScheme="blue" onClick={handleSubmit}>Analyze</Button>
+          <Button colorScheme="blue" onClick={handleSubmit}>Analyze File</Button>
+          <Input
+            placeholder="Enter your prompt for real-time analysis"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+          />
+          <Button colorScheme="blue" onClick={handlePromptSubmit}>Analyze Prompt</Button>
           <Box border="1px" borderColor="gray.200" p={3} width="100%">
             <Text fontWeight="bold">Insights:</Text>
             <Text>{insights || 'No insights to display yet.'}</Text>
