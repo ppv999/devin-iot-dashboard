@@ -10,6 +10,9 @@ function App() {
   // State to store the user's prompt for real-time analysis
   const [prompt, setPrompt] = useState('');
 
+  // Backend API URL
+  const API_URL = 'https://9546711cbee5.ngrok.app';
+
   // Handle file upload event
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -23,7 +26,7 @@ function App() {
       formData.append('file', file);
 
       try {
-        const response = await axios.post('http://127.0.0.1:5001/upload', formData, {
+        const response = await axios.post(`${API_URL}/upload`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -40,7 +43,7 @@ function App() {
   const handlePromptSubmit = async () => {
     if (prompt) {
       try {
-        const response = await axios.post('http://127.0.0.1:5001/analyze', { prompt });
+        const response = await axios.post(`${API_URL}/analyze`, { prompt });
         setInsights(response.data.insights);
       } catch (error) {
         console.error('Error submitting prompt:', error);
