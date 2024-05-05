@@ -21,6 +21,7 @@ function App() {
     const selectedFile = event.target.files[0];
     console.log('File selected:', selectedFile); // Additional logging to confirm file selection
     setFile(selectedFile);
+    console.log('File state after setFile:', selectedFile); // Additional logging to confirm file state after setFile
   };
 
   // Updated handleSubmit function with fixed prompt
@@ -41,6 +42,7 @@ function App() {
 
         // Assuming the response is properly formatted as a string
         setInsights(response.data);
+        console.log('Response data:', response.data); // Additional logging to check response data
       } catch (error) {
         console.error('Error:', error); // Additional logging to check for errors
         setInsights('Error processing file.');
