@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChakraProvider, Box, VStack, Heading, Text, Button, Input } from '@chakra-ui/react';
 import axios from 'axios';
 
@@ -13,9 +13,6 @@ function App() {
   // Backend API URL
   const API_URL = 'https://9546711cbee5.ngrok.app';
 
-  // Define the fixed prompt
-  const fixedPrompt = "Analyse the data in the file and share the insights. The device is used in a server room. Share some interesting facts about this data.";
-
   // Handle file upload event
   const handleFileUpload = (event) => {
     const selectedFile = event.target.files[0];
@@ -26,6 +23,7 @@ function App() {
         const fileContent = e.target.result;
         console.log('File content:', fileContent); // Log file content for debugging
         setFile(fileContent);
+        handleSubmit(fileContent); // Call handleSubmit directly with file content
       };
       reader.readAsText(selectedFile);
     } else {
@@ -34,27 +32,22 @@ function App() {
     }
   };
 
-  // Updated handleSubmit function to send CSV content as a string
-  const handleSubmit = async () => {
-    if (!file) {
-      console.error('No file selected.'); // Log error if file is not selected
-      setInsights('Please select a file to analyze.');
-      return; // Exit the function if no file is selected
-    }
-
+  // Updated handleSubmit function to send CSV content as form data
+  const handleSubmit = async (fileContent) => {
     setIsLoading(true); // Set loading state before sending request
     try {
-      const response = await axios.post(`${API_URL}/analyze`, {
-        data: file,
-        prompt: fixedPrompt
-      }, {
+      // Create form data
+      const formData = new FormData();
+      formData.append('data', fileContent);
+
+      const response = await axios.post(`${API_URL}/analyze`, formData, {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       });
 
       // Assuming the response is properly formatted as a string
-      setInsights(response.data);
+      setInsights(response.data.insights);
       console.log('Response data:', response.data); // Additional logging to check response data
     } catch (error) {
       console.error('Error:', error); // Additional logging to check for errors
@@ -63,19 +56,6 @@ function App() {
     setIsLoading(false); // Reset loading state after receiving response
   };
 
-  // useEffect to call handleSubmit when file state updates
-  useEffect(() => {
-    if (file) {
-      handleSubmit();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [file]);
-
-  // useEffect to log insights when they update
-  useEffect(() => {
-    console.log('Insights updated:', insights);
-  }, [insights]);
-
   return (
     <ChakraProvider>
       <Box p={5}>
@@ -83,7 +63,7 @@ function App() {
           <Heading>Data Analysis Dashboard</Heading>
           <Text>Upload your CSV file for analysis.</Text>
           <Input type="file" accept=".csv" onChange={handleFileUpload} />
-          <Button colorScheme="blue" isLoading={isLoading} onClick={handleSubmit}>Analyze File</Button>
+          <Button colorScheme="blue" isLoading={isLoading} onClick={() => handleSubmit(file)}>Analyze File</Button>
           <Box id="insightsBox" border="1px" borderColor="gray.200" p={30} width="100%" overflow="visible">
             <Text fontWeight="bold">Insights:</Text>
             <Text data-testid="insightsText" whiteSpace="pre-wrap">
