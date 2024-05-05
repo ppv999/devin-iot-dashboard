@@ -21,14 +21,15 @@ function App() {
     const file = event.target.files[0];
     console.log('File selected:', file); // Additional logging to confirm file selection
     setFile(file);
+    handleSubmit(file); // Directly call handleSubmit after setting the file
   };
 
   // Updated handleSubmit function with fixed prompt
-  const handleSubmit = async () => {
-    console.log('File state before API call:', file); // Log to check file state before API call
-    if (file) {
+  const handleSubmit = async (uploadedFile) => {
+    console.log('File state before API call:', uploadedFile); // Log to check file state before API call
+    if (uploadedFile) {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', uploadedFile);
       formData.append('prompt', fixedPrompt); // Append fixed prompt to form data
 
       setIsLoading(true); // Set loading state before sending request
@@ -63,7 +64,7 @@ function App() {
           <Heading>Data Analysis Dashboard</Heading>
           <Text>Upload your CSV file for analysis.</Text>
           <Input type="file" accept=".csv" onChange={handleFileUpload} />
-          <Button colorScheme="blue" onClick={handleSubmit} isLoading={isLoading}>Analyze File</Button>
+          <Button colorScheme="blue" isLoading={isLoading}>Analyze File</Button>
           <Box id="insightsBox" border="1px" borderColor="gray.200" p={30} width="100%" overflow="visible">
             <Text fontWeight="bold">Insights:</Text>
             <Text data-testid="insightsText" whiteSpace="pre-wrap">
