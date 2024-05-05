@@ -20,38 +20,56 @@ function App() {
   const handleFileUpload = (event) => {
     const selectedFile = event.target.files[0];
     console.log('File selected:', selectedFile); // Additional logging to confirm file selection
-    setFile(selectedFile);
-    console.log('File state after setFile:', selectedFile); // Additional logging to confirm file state after setFile
-  };
-
-  // Updated handleSubmit function with fixed prompt
-  const handleSubmit = async () => {
-    console.log('File state before API call:', file); // Log to check file state before API call
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('prompt', fixedPrompt); // Append fixed prompt to form data
-
-      setIsLoading(true); // Set loading state before sending request
-      try {
-        const response = await axios.post(`${API_URL}/analyze`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        // Assuming the response is properly formatted as a string
-        setInsights(response.data);
-        console.log('Response data:', response.data); // Additional logging to check response data
-      } catch (error) {
-        console.error('Error:', error); // Additional logging to check for errors
-        setInsights('Error processing file.');
-      }
-      setIsLoading(false); // Reset loading state after receiving response
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileContent = e.target.result;
+        console.log('File content:', fileContent); // Log file content for debugging
+        setFile(fileContent);
+      };
+      reader.readAsText(selectedFile);
     } else {
+      console.error('No file selected.'); // Log error if file is not selected
       setInsights('Please select a file to analyze.');
     }
   };
+
+  // Updated handleSubmit function to send CSV content as a string
+  const handleSubmit = async () => {
+    if (!file) {
+      console.error('No file selected.'); // Log error if file is not selected
+      setInsights('Please select a file to analyze.');
+      return; // Exit the function if no file is selected
+    }
+
+    setIsLoading(true); // Set loading state before sending request
+    try {
+      const response = await axios.post(`${API_URL}/analyze`, {
+        data: file,
+        prompt: fixedPrompt
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // Assuming the response is properly formatted as a string
+      setInsights(response.data);
+      console.log('Response data:', response.data); // Additional logging to check response data
+    } catch (error) {
+      console.error('Error:', error); // Additional logging to check for errors
+      setInsights('Error processing file.');
+    }
+    setIsLoading(false); // Reset loading state after receiving response
+  };
+
+  // useEffect to call handleSubmit when file state updates
+  useEffect(() => {
+    if (file) {
+      handleSubmit();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [file]);
 
   // useEffect to log insights when they update
   useEffect(() => {
