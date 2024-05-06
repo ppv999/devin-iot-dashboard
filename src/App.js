@@ -44,6 +44,8 @@ The data from the server room indicates that the temperature and humidity levels
   const [fileContent, setFileContent] = useState('');
   // New state hook for pasted CSV content
   const [pastedCsvContent, setPastedCsvContent] = useState('');
+  // State to store user feedback
+  const [feedback, setFeedback] = useState('');
 
   // Backend API URL
   const API_URL = 'https://9546711cbee5.ngrok.app';
@@ -95,6 +97,19 @@ The data from the server room indicates that the temperature and humidity levels
     setIsLoading(false); // Reset loading state after receiving response
   };
 
+  // Function to handle feedback submission
+  const handleFeedbackSubmit = async () => {
+    setIsLoading(true); // Set loading state before sending request
+    try {
+      const response = await axios.post(`${API_URL}/feedback`, { feedback });
+      console.log('Feedback response:', response.data); // Log feedback response for debugging
+      setFeedback(''); // Clear feedback after submission
+    } catch (error) {
+      console.error('Error submitting feedback:', error); // Log error if feedback submission fails
+    }
+    setIsLoading(false); // Reset loading state after receiving response
+  };
+
   return (
     <ChakraProvider>
       <Box p={5}>
@@ -108,6 +123,19 @@ The data from the server room indicates that the temperature and humidity levels
           />
           <Button colorScheme="blue" isLoading={isLoading} onClick={handleSubmit}>Analyze Pasted Content</Button>
           <Button colorScheme="blue" isLoading={isLoading} onClick={() => handleSubmit(fileContent)}>Analyze File</Button>
+          <Text>Enter your feedback below:</Text>
+          <Textarea
+            placeholder="Your feedback..."
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+          />
+          <Button
+            colorScheme="blue"
+            isLoading={isLoading}
+            onClick={handleFeedbackSubmit}
+          >
+            Submit Feedback
+          </Button>
           <Box id="insightsBox" border="1px" borderColor="gray.200" p={30} width="100%" overflow="visible">
             <Text fontWeight="bold">Insights:</Text>
             <Text data-testid="insightsText" whiteSpace="pre-wrap">
