@@ -3,8 +3,6 @@ import { ChakraProvider, Box, VStack, Heading, Text, Button, Input } from '@chak
 import axios from 'axios';
 
 function App() {
-  // State to store the uploaded file
-  const [file, setFile] = useState(null);
   // State to store the insights from OpenAI API
   const [insights, setInsights] = useState('');
   // State to indicate loading while request is being processed
@@ -22,8 +20,8 @@ function App() {
       reader.onload = (e) => {
         const fileContent = e.target.result;
         console.log('File content:', fileContent); // Log file content for debugging
-        setFile(fileContent);
-        handleSubmit(fileContent); // Call handleSubmit directly with file content
+        // Directly call handleSubmit with the file content
+        handleSubmit(fileContent);
       };
       reader.readAsText(selectedFile);
     } else {
@@ -32,22 +30,18 @@ function App() {
     }
   };
 
-  // Updated handleSubmit function to send CSV content as form data
+  // Updated handleSubmit function to send CSV content as raw data
   const handleSubmit = async (fileContent) => {
     setIsLoading(true); // Set loading state before sending request
     try {
-      // Create form data
-      const formData = new FormData();
-      formData.append('data', fileContent);
+      const response = await axios.post(`${API_URL}/analyze`, fileContent);
 
-      const response = await axios.post(`${API_URL}/analyze`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      // Assuming the response is properly formatted as a string
-      setInsights(response.data.insights);
+      // Check if the response contains insights and update the state accordingly
+      if (response.data && response.data.insights) {
+        setInsights(response.data.insights);
+      } else {
+        setInsights('No insights received from the analysis.');
+      }
       console.log('Response data:', response.data); // Additional logging to check response data
     } catch (error) {
       console.error('Error:', error); // Additional logging to check for errors
@@ -63,7 +57,7 @@ function App() {
           <Heading>Data Analysis Dashboard</Heading>
           <Text>Upload your CSV file for analysis.</Text>
           <Input type="file" accept=".csv" onChange={handleFileUpload} />
-          <Button colorScheme="blue" isLoading={isLoading} onClick={() => handleSubmit(file)}>Analyze File</Button>
+          <Button colorScheme="blue" isLoading={isLoading} onClick={() => handleFileUpload()}>Analyze File</Button>
           <Box id="insightsBox" border="1px" borderColor="gray.200" p={30} width="100%" overflow="visible">
             <Text fontWeight="bold">Insights:</Text>
             <Text data-testid="insightsText" whiteSpace="pre-wrap">
